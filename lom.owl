@@ -1,0 +1,540 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY terms "http://purl.org/dc/terms/" >
+    <!ENTITY lom "http://ltsc.ieee.org/xsd/LOM/" >
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY owl2 "http://www.w3.org/2006/12/owl2#" >
+    <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY owl2xml "http://www.w3.org/2006/12/owl2-xml#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<rdf:RDF xmlns="http://ltsc.ieee.org/xsd/LOM/"
+     xml:base="http://swig.hpclab.ceid.upatras.gr/dspace-ont/lom.owl"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
+     xmlns:lom="http://ltsc.ieee.org/xsd/LOM/"
+     xmlns:terms="http://purl.org/dc/terms/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl2="http://www.w3.org/2006/12/owl2#">
+    <owl:Ontology rdf:about="">
+        <owl:versionInfo rdf:datatype="&rdf;PlainLiteral">1.0</owl:versionInfo>
+        <dc:date rdf:datatype="&rdf;PlainLiteral">2011-01-14</dc:date>
+        <dc:creator xml:lang="en">Dimitrios Koutsomitropoulos</dc:creator>
+        <dc:description xml:lang="en">LOM Types Semantic Ontology Profile for use with the LOM metadata of the University of Patras Educational Repository</dc:description>
+        <dc:rights xml:lang="en">University of Patras, High Performance Information Systems Laboratory (HPCLab)</dc:rights>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:AnnotationProperty rdf:about="&dc;creator"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Context -->
+
+    <owl:Class rdf:about="&lom;Context">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Difficulty -->
+
+    <owl:Class rdf:about="&lom;Difficulty">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/IntendedEndUserRole -->
+
+    <owl:Class rdf:about="&lom;IntendedEndUserRole">
+        <rdfs:subClassOf rdf:resource="&terms;AgentClass"/>
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/InteractivityType -->
+
+    <owl:Class rdf:about="&lom;InteractivityType">
+        <rdfs:subClassOf rdf:resource="&terms;MethodOfInstruction"/>
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/LearningResourceType -->
+
+    <owl:Class rdf:about="&lom;LearningResourceType">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Status -->
+
+    <owl:Class rdf:about="&lom;Status">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/TypicalLearningTime -->
+
+    <owl:Class rdf:about="&lom;TypicalLearningTime">
+        <rdfs:subClassOf rdf:resource="&terms;SizeOrDuration"/>
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.org/dc/terms/AgentClass -->
+
+    <owl:Class rdf:about="&terms;AgentClass"/>
+    
+
+
+    <!-- http://purl.org/dc/terms/MethodOfInstruction -->
+
+    <owl:Class rdf:about="&terms;MethodOfInstruction"/>
+    
+
+
+    <!-- http://purl.org/dc/terms/SizeOrDuration -->
+
+    <owl:Class rdf:about="&terms;SizeOrDuration"/>
+    
+
+
+    <!-- http://www.w3.org/2002/07/owl#Thing -->
+
+    <owl:Class rdf:about="&owl;Thing"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Active -->
+
+    <InteractivityType rdf:about="&lom;Active">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </InteractivityType>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Author -->
+
+    <IntendedEndUserRole rdf:about="&lom;Author">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </IntendedEndUserRole>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Diagram -->
+
+    <LearningResourceType rdf:about="&lom;Diagram">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </LearningResourceType>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Difficult -->
+
+    <owl:Thing rdf:about="&lom;Difficult">
+        <rdf:type rdf:resource="&lom;Difficulty"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Draft -->
+
+    <owl:Thing rdf:about="&lom;Draft">
+        <rdf:type rdf:resource="&lom;Status"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Easy -->
+
+    <Difficulty rdf:about="&lom;Easy">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </Difficulty>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Exam -->
+
+    <owl:Thing rdf:about="&lom;Exam">
+        <rdf:type rdf:resource="&lom;LearningResourceType"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Exercise -->
+
+    <owl:Thing rdf:about="&lom;Exercise">
+        <rdf:type rdf:resource="&lom;LearningResourceType"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Experiment -->
+
+    <LearningResourceType rdf:about="&lom;Experiment">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </LearningResourceType>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Expositive -->
+
+    <InteractivityType rdf:about="&lom;Expositive">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </InteractivityType>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Fifth_Year -->
+
+    <owl:Thing rdf:about="&lom;Fifth_Year">
+        <rdf:type rdf:resource="&lom;Context"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Figure -->
+
+    <owl:Thing rdf:about="&lom;Figure">
+        <rdf:type rdf:resource="&lom;LearningResourceType"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Final -->
+
+    <Status rdf:about="&lom;Final">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </Status>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/First_Year -->
+
+    <Context rdf:about="&lom;First_Year">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </Context>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Fourth_Year -->
+
+    <owl:Thing rdf:about="&lom;Fourth_Year">
+        <rdf:type rdf:resource="&lom;Context"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Graph -->
+
+    <LearningResourceType rdf:about="&lom;Graph">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </LearningResourceType>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Index -->
+
+    <owl:Thing rdf:about="&lom;Index">
+        <rdf:type rdf:resource="&lom;LearningResourceType"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Lecture -->
+
+    <LearningResourceType rdf:about="&lom;Lecture">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </LearningResourceType>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Less_than_One_hour -->
+
+    <owl:Thing rdf:about="&lom;Less_than_One_hour">
+        <rdf:type rdf:resource="&lom;TypicalLearningTime"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Medium -->
+
+    <owl:Thing rdf:about="&lom;Medium">
+        <rdf:type rdf:resource="&lom;Difficulty"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Mixed -->
+
+    <InteractivityType rdf:about="&lom;Mixed">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </InteractivityType>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Narrative_Text -->
+
+    <owl:Thing rdf:about="&lom;Narrative_Text">
+        <rdf:type rdf:resource="&lom;LearningResourceType"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/One_Day -->
+
+    <TypicalLearningTime rdf:about="&lom;One_Day">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </TypicalLearningTime>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/One_Semester -->
+
+    <TypicalLearningTime rdf:about="&lom;One_Semester">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </TypicalLearningTime>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/One_Week -->
+
+    <owl:Thing rdf:about="&lom;One_Week">
+        <rdf:type rdf:resource="&lom;TypicalLearningTime"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/One_Year -->
+
+    <owl:Thing rdf:about="&lom;One_Year">
+        <rdf:type rdf:resource="&lom;TypicalLearningTime"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/One_hour_to_Three_hours -->
+
+    <TypicalLearningTime rdf:about="&lom;One_hour_to_Three_hours">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </TypicalLearningTime>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/PhD -->
+
+    <owl:Thing rdf:about="&lom;PhD">
+        <rdf:type rdf:resource="&lom;Context"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Postgraduate -->
+
+    <owl:Thing rdf:about="&lom;Postgraduate">
+        <rdf:type rdf:resource="&lom;Context"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Problem_Statement -->
+
+    <LearningResourceType rdf:about="&lom;Problem_Statement">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </LearningResourceType>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Questionnaire -->
+
+    <LearningResourceType rdf:about="&lom;Questionnaire">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </LearningResourceType>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Revised -->
+
+    <owl:Thing rdf:about="&lom;Revised">
+        <rdf:type rdf:resource="&lom;Status"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Second_Year -->
+
+    <Context rdf:about="&lom;Second_Year">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </Context>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Self_Assessment -->
+
+    <owl:Thing rdf:about="&lom;Self_Assessment">
+        <rdf:type rdf:resource="&lom;LearningResourceType"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Simulation -->
+
+    <LearningResourceType rdf:about="&lom;Simulation">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </LearningResourceType>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Sixth_Year -->
+
+    <owl:Thing rdf:about="&lom;Sixth_Year">
+        <rdf:type rdf:resource="&lom;Context"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Slide -->
+
+    <owl:Thing rdf:about="&lom;Slide">
+        <rdf:type rdf:resource="&lom;LearningResourceType"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Student -->
+
+    <owl:Thing rdf:about="&lom;Student">
+        <rdf:type rdf:resource="&lom;IntendedEndUserRole"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Table -->
+
+    <owl:Thing rdf:about="&lom;Table">
+        <rdf:type rdf:resource="&lom;LearningResourceType"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Teacher -->
+
+    <IntendedEndUserRole rdf:about="&lom;Teacher">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </IntendedEndUserRole>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Third_Year -->
+
+    <owl:Thing rdf:about="&lom;Third_Year">
+        <rdf:type rdf:resource="&lom;Context"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Three_hours_to_Five_hours -->
+
+    <owl:Thing rdf:about="&lom;Three_hours_to_Five_hours">
+        <rdf:type rdf:resource="&lom;TypicalLearningTime"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Undergraduate -->
+
+    <owl:Thing rdf:about="&lom;Undergraduate">
+        <rdf:type rdf:resource="&lom;Context"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Very_difficult -->
+
+    <Difficulty rdf:about="&lom;Very_difficult">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </Difficulty>
+    
+
+
+    <!-- http://ltsc.ieee.org/xsd/LOM/Very_easy -->
+
+    <Difficulty rdf:about="&lom;Very_easy">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </Difficulty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // General axioms
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description>
+        <rdf:type rdf:resource="&owl;AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="&lom;Context"/>
+            <rdf:Description rdf:about="&lom;Difficulty"/>
+            <rdf:Description rdf:about="&lom;IntendedEndUserRole"/>
+            <rdf:Description rdf:about="&lom;InteractivityType"/>
+            <rdf:Description rdf:about="&lom;LearningResourceType"/>
+            <rdf:Description rdf:about="&lom;Status"/>
+            <rdf:Description rdf:about="&lom;TypicalLearningTime"/>
+        </owl:members>
+    </rdf:Description>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 2.2.1.1138) http://owlapi.sourceforge.net -->
+

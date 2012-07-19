@@ -1,0 +1,775 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY dcterms "http://purl.org/dc/terms/" >
+    <!ENTITY lom "http://ltsc.ieee.org/xsd/LOM/" >
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY dc-ont "http://swig.hpclab.ceid.upatras.gr/dspace-ont/dc-ont.owl#" >
+    <!ENTITY dspace-ont "http://swig.hpclab.ceid.upatras.gr/dspace-ont/" >
+]>
+
+
+<rdf:RDF xmlns="http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#"
+     xml:base="http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:lom="http://ltsc.ieee.org/xsd/LOM/"
+     xmlns:dc-ont="http://swig.hpclab.ceid.upatras.gr/dspace-ont/dc-ont.owl#"
+     xmlns:dcterms="http://purl.org/dc/terms/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:dspace-ont="http://swig.hpclab.ceid.upatras.gr/dspace-ont/">
+
+    <owl:Ontology rdf:about="http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl">
+        <dc:date>2012-02-24</dc:date>
+        <owl:versionInfo>1.05</owl:versionInfo>
+        <rdfs:comment>Version History:
+        1.01: Collection is no longer a subclass of Community.
+        1.02: Added proper GCIs for anonymous classes (Item2Collection and slide rule).
+        1.03: Replaced owl:Thing with owl:NamedIndividual to help align towards OWL 2-RL.
+        1.04: Introduce dspace-ont:uniqueName as a functional datatype property for items and authors (UNA).
+        1.05: dspace-ont namespace change.
+        </rdfs:comment>
+        <dc:description xml:lang="en">A semantic application profile for DSpace. It contains OWL 2 constructs that model and refine the DSpace data model.</dc:description>
+        <dc:creator xml:lang="en">Dimitrios Koutsomitropoulos</dc:creator>
+        <dc:rights xml:lang="en">University of Patras, High Performance Information Systems Laboratory (HPCLab)</dc:rights>
+        <owl:imports rdf:resource="http://swig.hpclab.ceid.upatras.gr/dspace-ont/dc-ont.owl"/>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // datatype properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:DatatypeProperty rdf:about="&dspace-ont;uniqueName">
+	<rdf:type rdf:resource="&owl;FunctionalProperty"/>
+    </owl:DatatypeProperty>
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.org/dc/terms/contributor -->
+
+    <owl:ObjectProperty rdf:about="&dcterms;contributor"/>
+    
+
+
+    <!-- http://purl.org/dc/terms/description -->
+
+    <owl:ObjectProperty rdf:about="&dcterms;description"/>
+    
+
+
+    <!-- http://purl.org/dc/terms/hasPart -->
+
+    <owl:ObjectProperty rdf:about="&dcterms;hasPart"/>
+    
+
+
+    <!-- http://purl.org/dc/terms/relation -->
+
+    <owl:ObjectProperty rdf:about="&dcterms;relation"/>
+    
+
+
+    <!-- http://purl.org/dc/terms/type -->
+
+    <owl:ObjectProperty rdf:about="&dcterms;type"/>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#author -->
+
+    <owl:ObjectProperty rdf:about="&dspace-ont;author">
+        <rdfs:subPropertyOf rdf:resource="&dcterms;contributor"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#co_author -->
+
+    <owl:ObjectProperty rdf:about="&dspace-ont;co_author">
+        <rdfs:subPropertyOf rdf:resource="&dcterms;relation"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description>
+                <owl:inverseOf rdf:resource="&dspace-ont;author"/>
+            </rdf:Description>
+            <rdf:Description rdf:about="&dspace-ont;author"/>
+        </owl:propertyChainAxiom>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#sponsorship -->
+
+    <owl:ObjectProperty rdf:about="&dspace-ont;sponsorship">
+        <rdfs:subPropertyOf rdf:resource="&dcterms;description"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description>
+                <owl:inverseOf rdf:resource="&dspace-ont;author"/>
+            </rdf:Description>
+            <rdf:Description rdf:about="&dspace-ont;sponsorship"/>
+        </owl:propertyChainAxiom>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description>
+                <owl:inverseOf rdf:resource="&dcterms;contributor"/>
+            </rdf:Description>
+            <rdf:Description rdf:about="&dspace-ont;sponsorship"/>
+        </owl:propertyChainAxiom>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.org/dc/terms/FileFormat -->
+
+    <owl:Class rdf:about="&dcterms;FileFormat"/>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Application -->
+
+    <owl:Class rdf:about="&dspace-ont;Application">
+        <rdfs:subClassOf rdf:resource="&dspace-ont;MimeType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Audio -->
+
+    <owl:Class rdf:about="&dspace-ont;Audio">
+        <rdfs:subClassOf rdf:resource="&dspace-ont;MimeType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Collection -->
+
+    <owl:Class rdf:about="&dspace-ont;Collection">
+        <owl:disjointWith rdf:resource="&dspace-ont;Item"/>
+    </owl:Class>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Community -->
+
+    <owl:Class rdf:about="&dspace-ont;Community">
+        <owl:disjointWith rdf:resource="&dspace-ont;Item"/>
+    </owl:Class>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#DspaceType -->
+
+    <owl:Class rdf:about="&dspace-ont;DspaceType"/>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Image -->
+
+    <owl:Class rdf:about="&dspace-ont;Image">
+        <rdfs:subClassOf rdf:resource="&dspace-ont;MimeType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Item -->
+
+    <owl:Class rdf:about="&dspace-ont;Item">
+    </owl:Class>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#MimeType -->
+
+    <owl:Class rdf:about="&dspace-ont;MimeType">
+        <rdfs:subClassOf rdf:resource="&dcterms;FileFormat"/>
+    </owl:Class>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Text -->
+
+    <owl:Class rdf:about="&dspace-ont;Text">
+        <rdfs:subClassOf rdf:resource="&dspace-ont;MimeType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Video -->
+
+    <owl:Class rdf:about="&dspace-ont;Video">
+        <rdfs:subClassOf rdf:resource="&dspace-ont;MimeType"/>
+    </owl:Class>
+
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+   
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Animation -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Animation">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Article -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Article">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Book -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Book">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Book_Chapter -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Book_Chapter">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Dataset -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Dataset">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Image -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Image">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Image,_3-D -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Image,_3-D">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Learning_Object -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Learning_Object">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Map -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Map">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Musical_Score -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Musical_Score">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Other -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Other">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Plan_or_Blueprint -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Plan_or_Blueprint">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Preprint -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Preprint">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Presentation -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Presentation">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Recording,_acoustical -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Recording,_acoustical">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Recording,_musical -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Recording,_musical">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Recording,_oral -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Recording,_oral">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Software -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Software">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Technical_Report -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Technical_Report">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Thesis -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Thesis">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Video -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Video">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#Working_Paper -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;Working_Paper">
+        <rdf:type rdf:resource="&dspace-ont;DspaceType"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#basic -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;basic">
+        <rdf:type rdf:resource="&dspace-ont;Audio"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#css -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;css">
+        <rdf:type rdf:resource="&dspace-ont;Text"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#gif -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;gif">
+        <rdf:type rdf:resource="&dspace-ont;Image"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#html -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;html">
+        <rdf:type rdf:resource="&dspace-ont;Text"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#jpeg -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;jpeg">
+        <rdf:type rdf:resource="&dspace-ont;Image"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#marc -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;marc">
+        <rdf:type rdf:resource="&dspace-ont;Application"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#mathematica -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;mathematica">
+        <rdf:type rdf:resource="&dspace-ont;Application"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#mpeg -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;mpeg">
+        <rdf:type rdf:resource="&dspace-ont;Video"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#msword -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;msword">
+        <rdf:type rdf:resource="&dspace-ont;Application"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#octet-stream -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;octet-stream">
+        <rdf:type rdf:resource="&dspace-ont;Application"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#pdf -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;pdf">
+        <rdf:type rdf:resource="&dspace-ont;Application"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#plain -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;plain">
+        <rdf:type rdf:resource="&dspace-ont;Text"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#png -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;png">
+        <rdf:type rdf:resource="&dspace-ont;Image"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#postscript -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;postscript">
+        <rdf:type rdf:resource="&dspace-ont;Application"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#quicktime -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;quicktime">
+        <rdf:type rdf:resource="&dspace-ont;Video"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#richtext -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;richtext">
+        <rdf:type rdf:resource="&dspace-ont;Text"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#sgml -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;sgml">
+        <rdf:type rdf:resource="&dspace-ont;Application"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#tiff -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;tiff">
+        <rdf:type rdf:resource="&dspace-ont;Image"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#vnd.ms-excel -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;vnd.ms-excel">
+        <rdf:type rdf:resource="&dspace-ont;Application"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#vnd.ms-powerpoint -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;vnd.ms-powerpoint">
+        <rdf:type rdf:resource="&dspace-ont;Application"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#vnd.ms-project -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;vnd.ms-project">
+        <rdf:type rdf:resource="&dspace-ont;Application"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#vnd.visio -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;vnd.visio">
+        <rdf:type rdf:resource="&dspace-ont;Application"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#wordperfect5.1 -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;wordperfect5.1">
+        <rdf:type rdf:resource="&dspace-ont;Application"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#x-aiff -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;x-aiff">
+        <rdf:type rdf:resource="&dspace-ont;Audio"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#x-dvi -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;x-dvi">
+        <rdf:type rdf:resource="&dspace-ont;Application"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#x-filemaker -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;x-filemaker">
+        <rdf:type rdf:resource="&dspace-ont;Application"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#x-latex -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;x-latex">
+        <rdf:type rdf:resource="&dspace-ont;Application"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#x-mpeg -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;x-mpeg">
+        <rdf:type rdf:resource="&dspace-ont;Audio"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#x-ms-bmp -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;x-ms-bmp">
+        <rdf:type rdf:resource="&dspace-ont;Image"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#x-photo-cd -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;x-photo-cd">
+        <rdf:type rdf:resource="&dspace-ont;Image"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#x-photoshop -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;x-photoshop">
+        <rdf:type rdf:resource="&dspace-ont;Application"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#x-pn-realaudio -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;x-pn-realaudio">
+        <rdf:type rdf:resource="&dspace-ont;Audio"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#x-tex -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;x-tex">
+        <rdf:type rdf:resource="&dspace-ont;Application"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#x-wav -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;x-wav">
+        <rdf:type rdf:resource="&dspace-ont;Audio"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://swig.hpclab.ceid.upatras.gr/dspace-ont/dspace-ont.owl#xml -->
+
+    <owl:NamedIndividual rdf:about="&dspace-ont;xml">
+        <rdf:type rdf:resource="&dspace-ont;Text"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // General axioms
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description>
+        <rdf:type rdf:resource="&owl;AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="&dspace-ont;Application"/>
+            <rdf:Description rdf:about="&dspace-ont;Audio"/>
+            <rdf:Description rdf:about="&dspace-ont;Image"/>
+            <rdf:Description rdf:about="&dspace-ont;Text"/>
+            <rdf:Description rdf:about="&dspace-ont;Video"/>
+        </owl:members>
+    </rdf:Description>
+    
+    <!-- The negation in the left part of the axiom causes the ontology
+    	 not to be in OWL 2-RL.
+    -->
+    
+    <owl:Class>
+        <rdfs:subClassOf rdf:resource="&dspace-ont;Collection"/>
+        <owl:intersectionOf rdf:parseType="Collection">
+            <owl:Class>
+                <owl:complementOf rdf:resource="&dspace-ont;Item"/>
+            </owl:Class>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&dcterms;hasPart"/>
+                <owl:someValuesFrom rdf:resource="&dspace-ont;Item"/>
+            </owl:Restriction>
+        </owl:intersectionOf>
+    </owl:Class>
+    <rdf:Description>
+        <rdf:type rdf:resource="&owl;AllDifferent"/>
+        <owl:distinctMembers rdf:parseType="Collection">
+            <rdf:Description rdf:about="&dspace-ont;Animation"/>
+            <rdf:Description rdf:about="&dspace-ont;Article"/>
+            <rdf:Description rdf:about="&dspace-ont;Book"/>
+            <rdf:Description rdf:about="&dspace-ont;Book_Chapter"/>
+            <rdf:Description rdf:about="&dspace-ont;Dataset"/>
+            <rdf:Description rdf:about="&dspace-ont;Image"/>
+            <rdf:Description rdf:about="&dspace-ont;Image,_3-D"/>
+            <rdf:Description rdf:about="&dspace-ont;Learning_Object"/>
+            <rdf:Description rdf:about="&dspace-ont;Map"/>
+            <rdf:Description rdf:about="&dspace-ont;Musical_Score"/>
+            <rdf:Description rdf:about="&dspace-ont;Other"/>
+            <rdf:Description rdf:about="&dspace-ont;Plan_or_Blueprint"/>
+            <rdf:Description rdf:about="&dspace-ont;Preprint"/>
+            <rdf:Description rdf:about="&dspace-ont;Presentation"/>
+            <rdf:Description rdf:about="&dspace-ont;Recording,_acoustical"/>
+            <rdf:Description rdf:about="&dspace-ont;Recording,_musical"/>
+            <rdf:Description rdf:about="&dspace-ont;Recording,_oral"/>
+            <rdf:Description rdf:about="&dspace-ont;Software"/>
+            <rdf:Description rdf:about="&dspace-ont;Technical_Report"/>
+            <rdf:Description rdf:about="&dspace-ont;Thesis"/>
+            <rdf:Description rdf:about="&dspace-ont;Video"/>
+            <rdf:Description rdf:about="&dspace-ont;Working_Paper"/>
+        </owl:distinctMembers>
+    </rdf:Description>
+    <owl:Restriction>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&dcterms;type"/>
+                <owl:hasValue rdf:resource="&dspace-ont;Presentation"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <owl:onProperty rdf:resource="&dcterms;type"/>
+        <owl:hasValue rdf:resource="&lom;Slide"/>
+    </owl:Restriction>
+</rdf:RDF>
