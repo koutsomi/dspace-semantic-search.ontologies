@@ -11,9 +11,9 @@
 
 
 
-  - @ dc:hasVersion   1.1
+  - @ dc:hasVersion   1.2
 
-  - @ dc:date         2012-02-20
+  - @ dc:date         2012-07-04
 
   - @ dc:creator      Dimitrios Koutsomitropoulos
 
@@ -36,7 +36,12 @@
   - @ dc:description  1.1: Rewrite XLST to output OWL/XML instead of RDF. This way punned properties appear to be saved.
   					  dspace-ont namespace change.
   					  
-  
+  - @ dc:description  1.2: Assign proper URIs to Collections in case handle is disabled.
+                                        Enable UNA for collections by using these URIs as uniqueName.
+                                        Use these URIs as collection entity IRIs.
+                                        Assign xsd:dateTime datatype for dcterms:available and dcterms:dateAccepted.
+             
+             
   - @ dc:rights       University of Patras, High Performance Information Systems Laboratory (HPCLab)
 
 -->
@@ -76,24 +81,63 @@
   </xsl:template>
   
   <xsl:template match="oai:setSpec">
-  <NamedIndividual abbreviatedIRI="dspace-ont:{.}"/>
+    <!-- 
+    Attempt to assign a URI to the Collection. First check if handle system is enabled (other than the default 123456789). 
+    If not, try and guess canonical URL prefix from item identifier. Use this URI as dspace-ont:uniqueName for the Collection
+    -->
     <xsl:variable name="handle" select="substring-after(node(), '_')"/>
+    <xsl:variable name="item-handle" select="../../oai:metadata/dcterms:identifier[contains(.,'/handle/') and @type='http://www.w3.org/2001/XMLSchema#anyURI']"/>
+    <xsl:variable name="collection-identifier">
+     <xsl:choose>
+      <xsl:when test="substring-before($handle, '_')!='123456789'">
+      <xsl:text>http://hdl.handle.net/</xsl:text><xsl:value-of select="substring-before($handle,'_')"/>/<xsl:value-of select="substring-after($handle,'_')"/>
+      </xsl:when>
+      <xsl:otherwise>
+       <xsl:if test="$item-handle!=''">
+        <xsl:value-of select="substring-before($item-handle, '/handle/')"/><xsl:text>/handle/</xsl:text><xsl:value-of select="substring-before($handle,'_')"/>/<xsl:value-of select="substring-after($handle,'_')"/>
+        </xsl:if>
+      </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    
+   <xsl:variable name="collection-iri">
+   <xsl:choose>
+    <xsl:when test="$collection-identifier!=''">
+        <xsl:value-of select="$collection-identifier"/>
+    </xsl:when>
+    <xsl:otherwise>
+       <xsl:text>dspace-ont:</xsl:text><xsl:value-of select="."/>
+    </xsl:otherwise>
+   </xsl:choose>
+  </xsl:variable>
+  
+  <NamedIndividual IRI="{$collection-iri}"/>
     <ClassAssertion>
       <Class abbreviatedIRI="dspace-ont:Collection"/>
-      <NamedIndividual abbreviatedIRI="dspace-ont:{.}"/>
+      <NamedIndividual IRI="{$collection-iri}"/>
     </ClassAssertion>
     <ObjectPropertyAssertion>
       <ObjectProperty abbreviatedIRI="dcterms:isPartOf"/>
       <NamedIndividual IRI="{../oai:identifier}"/>
-      <NamedIndividual abbreviatedIRI="dspace-ont:{.}"/>
+      <NamedIndividual IRI="{$collection-iri}"/>
     </ObjectPropertyAssertion>
+    
+  <xsl:if test="$collection-identifier!=''">
     <DataPropertyAssertion>
       <DataProperty abbreviatedIRI="dcterms:identifier"/>
-      <NamedIndividual abbreviatedIRI="dspace-ont:{.}"/>
+      <NamedIndividual IRI="{$collection-iri}"/>
       <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#anyURI">
-      <xsl:text>http://hdl.handle.net/</xsl:text><xsl:value-of select="substring-before($handle,'_')"/>/<xsl:value-of select="substring-after($handle,'_')"/>
-      </Literal>
+      <xsl:value-of select="$collection-identifier"/>
+     </Literal>
     </DataPropertyAssertion>
+        <DataPropertyAssertion>
+      <DataProperty abbreviatedIRI="dspace-ont:uniqueName"/>
+      <NamedIndividual IRI="{$collection-iri}"/>
+      <Literal>
+      <xsl:value-of select="$collection-identifier"/>
+     </Literal>
+    </DataPropertyAssertion>
+   </xsl:if> 
 </xsl:template>
 
 
@@ -226,6 +270,11 @@
              <xsl:attribute name="lang">
              <xsl:value-of select="$lang"/>
              </xsl:attribute>
+             </xsl:if>
+             <xsl:if test="$element='dcterms:available' or $element='dcterms:dateAccepted'">
+               <xsl:attribute name="datatypeIRI">
+                <xsl:text>http://www.w3.org/2001/XMLSchema#dateTime</xsl:text>
+               </xsl:attribute>
              </xsl:if>
             <xsl:value-of select="."/>
             </Literal>
