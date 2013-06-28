@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE stylesheet [
 <!ENTITY dspace-ont "http://swig.hpclab.ceid.upatras.gr/dspace-ont/">
 <!ENTITY dcterms "http://purl.org/dc/terms/">
@@ -11,9 +11,9 @@
 
 
 
-  - @ dc:hasVersion   1.2
+  - @ dc:hasVersion   1.3
 
-  - @ dc:date         2012-07-04
+  - @ dc:date         2013-06-28
 
   - @ dc:creator      Dimitrios Koutsomitropoulos
 
@@ -39,9 +39,11 @@
   - @ dc:description  1.2: Assign proper URIs to Collections in case handle is disabled.
                                         Enable UNA for collections by using these URIs as uniqueName.
                                         Use these URIs as collection entity IRIs.
-                                        Assign xsd:dateTime datatype for dcterms:available and dcterms:dateAccepted.
+                                        Assign xsd:dateTime datatype for dcterms:available and dcterms:dateAccepted.             				
              
-             
+  - @ dc:description  1.3: Fix for subject types that have absolute IRIs.
+  
+  
   - @ dc:rights       University of Patras, High Performance Information Systems Laboratory (HPCLab)
 
 -->
@@ -207,11 +209,22 @@
  <xsl:template match="oai:metadata/*">
     <xsl:variable name="type" select="@type"/>
     <xsl:variable name="prefix">
+      <!-- The following exception is only for dcterms:subject fields that have a classification scheme as type. 
+              It won't matter if these types get a dcterms: prefix (e.g. dcterms:DDC).
+              However, there is the case where the value may be an absolute IRI (without prefix), like a handle.
+              -->
+              
+      
       <xsl:choose>
-       <xsl:when test="contains($type,'dcterms:')">dspace-ont:</xsl:when>
-       <xsl:otherwise><xsl:value-of select="substring-before($type, ':')"/>:</xsl:otherwise>
+       <xsl:when test="contains(.,'http://')">
+      <NamedIndividual IRI="{.}"/> 
+      </xsl:when>
+       <xsl:otherwise>
+       <NamedIndividual abbreviatedIRI="{substring-before($type, ':')}:{normalize-space(translate(.,'  ','_ '))}"/>
+       </xsl:otherwise>
      </xsl:choose>
-    </xsl:variable>
+   </xsl:variable>
+    
     <xsl:variable name="element" select="name()"/>
     <xsl:variable name="value" select="."/>
     <xsl:variable name="lang" select="substring(@xml:lang,1,2)"/>
@@ -223,15 +236,15 @@
           <ObjectPropertyAssertion>
             <ObjectProperty abbreviatedIRI="{$element}"/>
             <NamedIndividual IRI="{../../oai:header/oai:identifier}"/>
-            <NamedIndividual abbreviatedIRI="{$prefix}{normalize-space(translate(.,'  ','_ '))}"/>
+           <xsl:copy-of select="$prefix"/>
           </ObjectPropertyAssertion>
           <ClassAssertion>
             <Class abbreviatedIRI="{$type}"/>
-            <NamedIndividual abbreviatedIRI="{$prefix}{normalize-space(translate(.,'  ','_ '))}"/>
+            <xsl:copy-of select="$prefix"/>
           </ClassAssertion>
           <DataPropertyAssertion>
             <DataProperty abbreviatedIRI="rdfs:label"/>
-            <NamedIndividual abbreviatedIRI="{$prefix}{normalize-space(translate(.,'  ','_ '))}"/>
+            <xsl:copy-of select="$prefix"/>
             <Literal>
             <xsl:if test="$lang!=''">
              <xsl:attribute name="lang">
