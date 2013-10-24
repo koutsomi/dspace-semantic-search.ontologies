@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE stylesheet [
 <!ENTITY dspace-ont "http://swig.hpclab.ceid.upatras.gr/dspace-ont/">
 <!ENTITY dcterms "http://purl.org/dc/terms/">
@@ -11,9 +11,9 @@
 
 
 
-  - @ dc:hasVersion   1.3
+  - @ dc:hasVersion   1.4
 
-  - @ dc:date         2013-06-28
+  - @ dc:date         2013-10-17
 
   - @ dc:creator      Dimitrios Koutsomitropoulos
 
@@ -42,12 +42,20 @@
                                         Assign xsd:dateTime datatype for dcterms:available and dcterms:dateAccepted.             				
              
   - @ dc:description  1.3: Fix for subject types that have absolute IRIs.
+
+  
+
+  - @ dc:description  1.4: Distinguish between collections and communities.
+
+                                      Revamp mimetype format reification (instances of dcterms:FileFormat class).
+
+
   
   
   - @ dc:rights       University of Patras, High Performance Information Systems Laboratory (HPCLab)
 
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:oai="http://www.openarchives.org/OAI/2.0/" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dspace-ont="http://swig.hpclab.ceid.upatras.gr/dspace-ont/" xmlns:dspace-ont-old="http://ippocrates.hpclab.ceid.upatras.gr:8998/dc-ont/dspace-ont.owl#" xmlns:lom="http://ltsc.ieee.org/xsd/LOM/" version="2.0" xmlns="http://www.w3.org/2002/07/owl#" exclude-result-prefixes="xsl xsi oai oai_dc dspace-ont-old">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:oai="http://www.openarchives.org/OAI/2.0/" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dspace-ont="http://swig.hpclab.ceid.upatras.gr/dspace-ont/" xmlns:dspace-ont-old="http://ippocrates.hpclab.ceid.upatras.gr:8998/dc-ont/dspace-ont.owl#" xmlns:lom="http://ltsc.ieee.org/xsd/LOM/" xmlns="http://www.w3.org/2002/07/owl#" version="2.0" exclude-result-prefixes="xsl xsi oai oai_dc dspace-ont-old">
   <xsl:output method="xml" indent="yes"/>
   <xsl:variable name="langCount" select="1"/>
   <xsl:template match="/">
@@ -66,9 +74,8 @@
       <!--<xsl:apply-templates select="/" mode="UNA"/>-->
     </Ontology>
   </xsl:template>
-  
   <xsl:template match="oai:record" priority="1">
-   <NamedIndividual IRI="{oai:header/oai:identifier}"/>
+    <NamedIndividual IRI="{oai:header/oai:identifier}"/>
     <ClassAssertion>
       <Class abbreviatedIRI="dspace-ont:Item"/>
       <NamedIndividual IRI="{oai:header/oai:identifier}"/>
@@ -76,12 +83,13 @@
     <DataPropertyAssertion>
       <DataProperty abbreviatedIRI="dspace-ont:uniqueName"/>
       <NamedIndividual IRI="{oai:header/oai:identifier}"/>
-      <Literal><xsl:value-of select="oai:header/oai:identifier"/></Literal>
+      <Literal>
+        <xsl:value-of select="oai:header/oai:identifier"/>
+      </Literal>
     </DataPropertyAssertion>
     <xsl:apply-templates select="oai:header/oai:setSpec"/>
     <xsl:apply-templates select="oai:metadata"/>
   </xsl:template>
-  
   <xsl:template match="oai:setSpec">
     <!-- 
     Attempt to assign a URI to the Collection. First check if handle system is enabled (other than the default 123456789). 
@@ -90,211 +98,244 @@
     <xsl:variable name="handle" select="substring-after(node(), '_')"/>
     <xsl:variable name="item-handle" select="../../oai:metadata/dcterms:identifier[contains(.,'/handle/') and @type='http://www.w3.org/2001/XMLSchema#anyURI']"/>
     <xsl:variable name="collection-identifier">
-     <xsl:choose>
-      <xsl:when test="substring-before($handle, '_')!='123456789'">
-      <xsl:text>http://hdl.handle.net/</xsl:text><xsl:value-of select="substring-before($handle,'_')"/>/<xsl:value-of select="substring-after($handle,'_')"/>
-      </xsl:when>
-      <xsl:otherwise>
-       <xsl:if test="$item-handle!=''">
-        <xsl:value-of select="substring-before($item-handle, '/handle/')"/><xsl:text>/handle/</xsl:text><xsl:value-of select="substring-before($handle,'_')"/>/<xsl:value-of select="substring-after($handle,'_')"/>
-        </xsl:if>
-      </xsl:otherwise>
+      <xsl:choose>
+        <xsl:when test="substring-before($handle, '_')!='123456789'"><xsl:text>http://hdl.handle.net/</xsl:text><xsl:value-of select="substring-before($handle,'_')"/>/<xsl:value-of select="substring-after($handle,'_')"/></xsl:when>
+        <xsl:otherwise>
+          <xsl:if test="$item-handle!=''"><xsl:value-of select="substring-before($item-handle, '/handle/')"/><xsl:text>/handle/</xsl:text><xsl:value-of select="substring-before($handle,'_')"/>/<xsl:value-of select="substring-after($handle,'_')"/></xsl:if>
+        </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    
-   <xsl:variable name="collection-iri">
-   <xsl:choose>
-    <xsl:when test="$collection-identifier!=''">
-        <xsl:value-of select="$collection-identifier"/>
-    </xsl:when>
-    <xsl:otherwise>
-       <xsl:text>dspace-ont:</xsl:text><xsl:value-of select="."/>
-    </xsl:otherwise>
-   </xsl:choose>
-  </xsl:variable>
-  
-  <NamedIndividual IRI="{$collection-iri}"/>
+    <!-- Is this a collection or community?-->
+    <xsl:variable name="element">
+      <xsl:choose>
+        <xsl:when test="substring-before(node(),'_')='com'">
+          <xsl:text>dspace-ont:Community</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>dspace-ont:Collection</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="collection-iri">
+      <xsl:choose>
+        <xsl:when test="$collection-identifier!=''">
+          <xsl:value-of select="$collection-identifier"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>dspace-ont:</xsl:text>
+          <xsl:value-of select="."/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <NamedIndividual IRI="{$collection-iri}"/>
     <ClassAssertion>
-      <Class abbreviatedIRI="dspace-ont:Collection"/>
+      <Class abbreviatedIRI="{$element}"/>
       <NamedIndividual IRI="{$collection-iri}"/>
     </ClassAssertion>
+    <!-- sibling communities may be parents of the current collection or the current (sub-) community. Cannot
+
+        make safe assumptions however, due to item mapping
+
+    <xsl:for-each select="preceding-sibling::oai:setSpec[contains(., 'com')] | following-sibling::oai:setSpec[contains(., 'com')]">
+
+      <ObjectPropertyAssertion>
+
+      <ObjectProperty abbreviatedIRI="dcterms:isPartOf"/>
+
+      <NamedIndividual IRI="{$collection-iri}"/>
+
+      <NamedIndividual IRI=""/>
+
+    </ObjectPropertyAssertion>
+
+    </xsl:for-each>
+
+  -->
     <ObjectPropertyAssertion>
       <ObjectProperty abbreviatedIRI="dcterms:isPartOf"/>
       <NamedIndividual IRI="{../oai:identifier}"/>
       <NamedIndividual IRI="{$collection-iri}"/>
     </ObjectPropertyAssertion>
-    
-  <xsl:if test="$collection-identifier!=''">
-    <DataPropertyAssertion>
-      <DataProperty abbreviatedIRI="dcterms:identifier"/>
-      <NamedIndividual IRI="{$collection-iri}"/>
-      <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#anyURI">
-      <xsl:value-of select="$collection-identifier"/>
-     </Literal>
-    </DataPropertyAssertion>
-        <DataPropertyAssertion>
-      <DataProperty abbreviatedIRI="dspace-ont:uniqueName"/>
-      <NamedIndividual IRI="{$collection-iri}"/>
-      <Literal>
-      <xsl:value-of select="$collection-identifier"/>
-     </Literal>
-    </DataPropertyAssertion>
-   </xsl:if> 
-</xsl:template>
-
-
-
-<xsl:template match="dcterms:contributor | dspace-ont:author | dspace-ont-old:author" priority="1">
+    <xsl:if test="$collection-identifier!=''">
+      <DataPropertyAssertion>
+        <DataProperty abbreviatedIRI="dcterms:identifier"/>
+        <NamedIndividual IRI="{$collection-iri}"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#anyURI">
+          <xsl:value-of select="$collection-identifier"/>
+        </Literal>
+      </DataPropertyAssertion>
+      <DataPropertyAssertion>
+        <DataProperty abbreviatedIRI="dspace-ont:uniqueName"/>
+        <NamedIndividual IRI="{$collection-iri}"/>
+        <Literal>
+          <xsl:value-of select="$collection-identifier"/>
+        </Literal>
+      </DataPropertyAssertion>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template match="dcterms:contributor | dspace-ont:author | dspace-ont-old:author" priority="1">
     <xsl:variable name="lang" select="substring(@xml:lang,1,2)"/>
     <xsl:variable name="value" select="."/>
     <xsl:variable name="value2" select="translate($value,',','_')"/>
     <xsl:variable name="element" select="name()"/>
-
-   
-   <ObjectPropertyAssertion>
-     <ObjectProperty abbreviatedIRI="{$element}"/>
-     <NamedIndividual IRI="{../../oai:header/oai:identifier}"/>
-     <NamedIndividual abbreviatedIRI="dspace-ont:{translate($value2,' ','')}"/>
-   </ObjectPropertyAssertion>
-   
-   <DataPropertyAssertion>
+    <ObjectPropertyAssertion>
+      <ObjectProperty abbreviatedIRI="{$element}"/>
+      <NamedIndividual IRI="{../../oai:header/oai:identifier}"/>
+      <NamedIndividual abbreviatedIRI="dspace-ont:{translate($value2,' ','')}"/>
+    </ObjectPropertyAssertion>
+    <DataPropertyAssertion>
       <DataProperty abbreviatedIRI="dspace-ont:uniqueName"/>
       <NamedIndividual abbreviatedIRI="dspace-ont:{translate($value2,' ','')}"/>
-      <Literal><xsl:value-of select="translate($value2,' ','')"/></Literal>
-   </DataPropertyAssertion> 
-   
-   <xsl:choose>
-    <xsl:when test="contains($value, ',')"> 
-    <DataPropertyAssertion>
-      <DataProperty abbreviatedIRI="foaf:name"/>
-      <NamedIndividual abbreviatedIRI="dspace-ont:{translate($value2,' ','')}"/>
-      <Literal xml:lang="{$lang}"><xsl:value-of select="normalize-space(substring-after($value, ','))"/></Literal>
-   </DataPropertyAssertion> 
-    <DataPropertyAssertion>
-      <DataProperty abbreviatedIRI="foaf:surname"/>
-      <NamedIndividual abbreviatedIRI="dspace-ont:{translate($value2,' ','')}"/>
-      <Literal xml:lang="{$lang}"><xsl:value-of select="normalize-space(substring-before($value, ','))"/></Literal>
-   </DataPropertyAssertion> 
-    </xsl:when>
-  </xsl:choose>
+      <Literal>
+        <xsl:value-of select="translate($value2,' ','')"/>
+      </Literal>
+    </DataPropertyAssertion>
+    <xsl:choose>
+      <xsl:when test="contains($value, ',')">
+        <DataPropertyAssertion>
+          <DataProperty abbreviatedIRI="foaf:name"/>
+          <NamedIndividual abbreviatedIRI="dspace-ont:{translate($value2,' ','')}"/>
+          <Literal xml:lang="{$lang}">
+            <xsl:value-of select="normalize-space(substring-after($value, ','))"/>
+          </Literal>
+        </DataPropertyAssertion>
+        <DataPropertyAssertion>
+          <DataProperty abbreviatedIRI="foaf:surname"/>
+          <NamedIndividual abbreviatedIRI="dspace-ont:{translate($value2,' ','')}"/>
+          <Literal xml:lang="{$lang}">
+            <xsl:value-of select="normalize-space(substring-before($value, ','))"/>
+          </Literal>
+        </DataPropertyAssertion>
+      </xsl:when>
+    </xsl:choose>
   </xsl:template>
-  
   <xsl:template match="dspace-ont:sponsorship | dspace-ont-old:sponsorship" priority="1">
     <xsl:variable name="value" select="."/>
     <xsl:variable name="lang" select="substring(@xml:lang,1,2)"/>
     <!--<xsl:if test="self::*[not(preceding-sibling::dspace-ont:sponsorship[.!=''])]">-->
     <ObjectPropertyAssertion>
       <ObjectProperty abbreviatedIRI="dspace-ont:sponsorship"/>
-     <NamedIndividual IRI="{../../oai:header/oai:identifier}"/>
-     <NamedIndividual abbreviatedIRI="dspace-ont:{translate($value,' ','_')}"/>
+      <NamedIndividual IRI="{../../oai:header/oai:identifier}"/>
+      <NamedIndividual abbreviatedIRI="dspace-ont:{translate($value,' ','_')}"/>
     </ObjectPropertyAssertion>
     <DataPropertyAssertion>
       <DataProperty abbreviatedIRI="dspace-ont:uniqueName"/>
       <NamedIndividual abbreviatedIRI="dspace-ont:{translate($value,' ','_')}"/>
-      <Literal><xsl:value-of select="translate($value,' ','_')"/></Literal>
+      <Literal>
+        <xsl:value-of select="translate($value,' ','_')"/>
+      </Literal>
     </DataPropertyAssertion>
-<!--	<xsl:for-each select="../dspace-ont:sponsorship[@xml:lang!='']">     -->    
+    <!--	<xsl:for-each select="../dspace-ont:sponsorship[@xml:lang!='']">     -->
     <DataPropertyAssertion>
       <DataProperty abbreviatedIRI="rdfs:label"/>
       <NamedIndividual abbreviatedIRI="dspace-ont:{translate($value,' ','_')}"/>
-      <Literal xml:lang="{$lang}"><xsl:value-of select="."/></Literal>
+      <Literal xml:lang="{$lang}">
+        <xsl:value-of select="."/>
+      </Literal>
     </DataPropertyAssertion>
-            <!-- 	</xsl:for-each>      -->
+    <!-- 	</xsl:for-each>      -->
     <!--</xsl:if>-->
   </xsl:template>
-  
-
-  
-  
- <xsl:template match="oai:metadata/*">
+  <xsl:template match="oai:metadata/*">
     <xsl:variable name="type" select="@type"/>
     <xsl:variable name="prefix">
       <!-- The following exception is only for dcterms:subject fields that have a classification scheme as type. 
               It won't matter if these types get a dcterms: prefix (e.g. dcterms:DDC).
               However, there is the case where the value may be an absolute IRI (without prefix), like a handle.
               -->
-              
-      
       <xsl:choose>
-       <xsl:when test="contains(.,'http://')">
-      <NamedIndividual IRI="{.}"/> 
-      </xsl:when>
-       <xsl:otherwise>
-       <NamedIndividual abbreviatedIRI="{substring-before($type, ':')}:{normalize-space(translate(.,'  ','_ '))}"/>
-       </xsl:otherwise>
-     </xsl:choose>
-   </xsl:variable>
-    
+        <xsl:when test="contains(.,'http://')">
+          <NamedIndividual IRI="{.}"/>
+        </xsl:when>
+        <!-- revamp mimetype reification. Should find a workaround for charset specification
+
+            in text formats, that comes after the colon. For now it is kept in the label.
+
+            
+
+        -->
+        <xsl:when test="contains($type,'dspace-ont:MimeType')">
+          <xsl:choose>
+            <xsl:when test="contains(., ';') and contains(., '/')">
+              <NamedIndividual abbreviatedIRI="dspace-ont:{substring-before(substring-after(.,'/'), ';')}"/>
+            </xsl:when>
+            <xsl:when test="contains(., '/') and not(contains(., ';'))">
+              <NamedIndividual abbreviatedIRI="dspace-ont:{substring-after(.,'/')}"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <NamedIndividual abbreviatedIRI="dspace-ont:{normalize-space(translate(.,'  ','_ '))}"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:otherwise>
+          <NamedIndividual abbreviatedIRI="{substring-before($type, ':')}:{normalize-space(translate(.,'  ','_ '))}"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:variable name="element" select="name()"/>
     <xsl:variable name="value" select="."/>
     <xsl:variable name="lang" select="substring(@xml:lang,1,2)"/>
-    
-
-    
-      <xsl:choose>
-        <xsl:when test="contains($type,'dcterms:') or contains($type,'lom:') or contains($type,'dspace-ont:')">
-          <ObjectPropertyAssertion>
-            <ObjectProperty abbreviatedIRI="{$element}"/>
-            <NamedIndividual IRI="{../../oai:header/oai:identifier}"/>
-           <xsl:copy-of select="$prefix"/>
-          </ObjectPropertyAssertion>
-          <ClassAssertion>
-            <Class abbreviatedIRI="{$type}"/>
-            <xsl:copy-of select="$prefix"/>
-          </ClassAssertion>
-          <DataPropertyAssertion>
-            <DataProperty abbreviatedIRI="rdfs:label"/>
-            <xsl:copy-of select="$prefix"/>
-            <Literal>
+    <xsl:choose>
+      <xsl:when test="contains($type,'dcterms:') or contains($type,'lom:') or contains($type,'dspace-ont:')">
+        <ObjectPropertyAssertion>
+          <ObjectProperty abbreviatedIRI="{$element}"/>
+          <NamedIndividual IRI="{../../oai:header/oai:identifier}"/>
+          <xsl:copy-of select="$prefix"/>
+        </ObjectPropertyAssertion>
+        <ClassAssertion>
+          <Class abbreviatedIRI="{$type}"/>
+          <xsl:copy-of select="$prefix"/>
+        </ClassAssertion>
+        <DataPropertyAssertion>
+          <DataProperty abbreviatedIRI="rdfs:label"/>
+          <xsl:copy-of select="$prefix"/>
+          <Literal>
             <xsl:if test="$lang!=''">
-             <xsl:attribute name="lang">
-             <xsl:value-of select="$lang"/>
-             </xsl:attribute>
-             </xsl:if>
+              <xsl:attribute name="lang">
+                <xsl:value-of select="$lang"/>
+              </xsl:attribute>
+            </xsl:if>
             <xsl:value-of select="."/>
-            </Literal>
-          </DataPropertyAssertion>
-          </xsl:when>
-        
-<!-- Hack to exclude xsd:language datatypes that FaCT++ 1.5.2 would complain about -->        
-         <xsl:when test="$type!='http://www.w3.org/2001/XMLSchema#language' and $type!=''">
-             <DataPropertyAssertion>
-             <DataProperty abbreviatedIRI="{$element}"/>
-             <NamedIndividual IRI="{../../oai:header/oai:identifier}"/>
-            <Literal>
+          </Literal>
+        </DataPropertyAssertion>
+      </xsl:when>
+      <!-- Hack to exclude xsd:language datatypes that FaCT++ 1.5.2 would complain about -->
+      <xsl:when test="$type!='http://www.w3.org/2001/XMLSchema#language' and $type!=''">
+        <DataPropertyAssertion>
+          <DataProperty abbreviatedIRI="{$element}"/>
+          <NamedIndividual IRI="{../../oai:header/oai:identifier}"/>
+          <Literal>
             <xsl:if test="$lang!=''">
-             <xsl:attribute name="lang">
-             <xsl:value-of select="$lang"/>
-             </xsl:attribute>
-             </xsl:if>
-             <xsl:attribute name="datatypeIRI">
-             <xsl:value-of select="$type"/>
-             </xsl:attribute>
+              <xsl:attribute name="lang">
+                <xsl:value-of select="$lang"/>
+              </xsl:attribute>
+            </xsl:if>
+            <xsl:attribute name="datatypeIRI">
+              <xsl:value-of select="$type"/>
+            </xsl:attribute>
             <xsl:value-of select="."/>
-            </Literal>
-           </DataPropertyAssertion>
-         </xsl:when>
-         <xsl:otherwise>
-              <DataPropertyAssertion>
-             <DataProperty abbreviatedIRI="{$element}"/>
-             <NamedIndividual IRI="{../../oai:header/oai:identifier}"/>
-            <Literal>
+          </Literal>
+        </DataPropertyAssertion>
+      </xsl:when>
+      <xsl:otherwise>
+        <DataPropertyAssertion>
+          <DataProperty abbreviatedIRI="{$element}"/>
+          <NamedIndividual IRI="{../../oai:header/oai:identifier}"/>
+          <Literal>
             <xsl:if test="$lang!=''">
-             <xsl:attribute name="lang">
-             <xsl:value-of select="$lang"/>
-             </xsl:attribute>
-             </xsl:if>
-             <xsl:if test="$element='dcterms:available' or $element='dcterms:dateAccepted'">
-               <xsl:attribute name="datatypeIRI">
+              <xsl:attribute name="lang">
+                <xsl:value-of select="$lang"/>
+              </xsl:attribute>
+            </xsl:if>
+            <xsl:if test="$element='dcterms:available' or $element='dcterms:dateAccepted'">
+              <xsl:attribute name="datatypeIRI">
                 <xsl:text>http://www.w3.org/2001/XMLSchema#dateTime</xsl:text>
-               </xsl:attribute>
-             </xsl:if>
+              </xsl:attribute>
+            </xsl:if>
             <xsl:value-of select="."/>
-            </Literal>
-           </DataPropertyAssertion>
-         </xsl:otherwise>
-       </xsl:choose> 
+          </Literal>
+        </DataPropertyAssertion>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
-        
-  
 </xsl:stylesheet>
