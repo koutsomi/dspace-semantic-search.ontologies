@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE stylesheet [
 <!ENTITY dspace-ont "http://swig.hpclab.ceid.upatras.gr/dspace-ont/">
 <!ENTITY dcterms "http://purl.org/dc/terms/">
@@ -11,9 +11,9 @@
 
 
 
-  - @ dc:hasVersion   1.4
+  - @ dc:hasVersion   1.5
 
-  - @ dc:date         2013-10-17
+  - @ dc:date         2014-04-22
 
   - @ dc:creator      Dimitrios Koutsomitropoulos
 
@@ -48,6 +48,12 @@
   - @ dc:description  1.4: Distinguish between collections and communities.
 
                                       Revamp mimetype format reification (instances of dcterms:FileFormat class).
+
+ 
+ 
+ - @ dc:description  1.5: Inject DBpedia URLs for dcterms:type types, authors, contributors, sponsors
+
+                                      
 
 
   
@@ -177,6 +183,7 @@
     <xsl:variable name="lang" select="substring(@xml:lang,1,2)"/>
     <xsl:variable name="value" select="."/>
     <xsl:variable name="value2" select="translate($value,',','_')"/>
+    <xsl:variable name="dbvalue" select="normalize-space(translate($value,',',' '))"/>
     <xsl:variable name="element" select="name()"/>
     <ObjectPropertyAssertion>
       <ObjectProperty abbreviatedIRI="{$element}"/>
@@ -190,6 +197,19 @@
         <xsl:value-of select="translate($value2,' ','')"/>
       </Literal>
     </DataPropertyAssertion>
+  <!-- Inject DBpedia URI for authors, contributors-->   
+    <DataPropertyAssertion>
+      <DataProperty abbreviatedIRI="foaf:page"/>
+      <NamedIndividual abbreviatedIRI="dspace-ont:{translate($value2,' ','')}"/>
+      <Literal>
+        <xsl:attribute name="datatypeIRI">
+          <xsl:text>http://www.w3.org/2001/XMLSchema#anyURI</xsl:text>
+        </xsl:attribute>
+        <xsl:text>http://www.dbpedia.org/resource/</xsl:text>
+        <xsl:value-of select="translate($value2,' ','')"/>
+      </Literal>
+    </DataPropertyAssertion>
+    
     <xsl:choose>
       <xsl:when test="contains($value, ',')">
         <DataPropertyAssertion>
@@ -235,6 +255,18 @@
     </DataPropertyAssertion>
     <!-- 	</xsl:for-each>      -->
     <!--</xsl:if>-->
+  <!-- Inject DBpedia URI for sponsors-->   
+    <DataPropertyAssertion>
+      <DataProperty abbreviatedIRI="foaf:page"/>
+      <NamedIndividual abbreviatedIRI="dspace-ont:{translate($value,' ','_')}"/>
+      <Literal>
+        <xsl:attribute name="datatypeIRI">
+          <xsl:text>http://www.w3.org/2001/XMLSchema#anyURI</xsl:text>
+        </xsl:attribute>
+        <xsl:text>http://www.dbpedia.org/resource/</xsl:text>
+        <xsl:value-of select="translate($value,' ','_')"/>
+      </Literal>
+    </DataPropertyAssertion>  
   </xsl:template>
   <xsl:template match="oai:metadata/*">
     <xsl:variable name="type" select="@type"/>
@@ -298,6 +330,20 @@
             <xsl:value-of select="."/>
           </Literal>
         </DataPropertyAssertion>
+      
+       <!-- Inject DBpedia URI currently, only for dcterms:type types --> 
+    <xsl:if test="$element='dcterms:type'">
+        <DataPropertyAssertion>
+          <DataProperty abbreviatedIRI="foaf:page"/>
+          <xsl:copy-of select="$prefix"/>
+          <Literal>
+              <xsl:attribute name="datatypeIRI">
+                <xsl:text>http://www.w3.org/2001/XMLSchema#anyURI</xsl:text>
+              </xsl:attribute>
+            http://dbpedia.org/resource/<xsl:value-of select="translate(.,' ','_')"/>
+          </Literal>
+        </DataPropertyAssertion>
+      </xsl:if>
       </xsl:when>
       <!-- Hack to exclude xsd:language datatypes that FaCT++ 1.5.2 would complain about -->
       <xsl:when test="$type!='http://www.w3.org/2001/XMLSchema#language' and $type!=''">
